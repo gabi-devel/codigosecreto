@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuadrícula de Equipos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .grid-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px; /* Igual distancia entre filas y columnas */
+            width: 98vw; /* Ocupa el 98% del ancho del viewport */
+            max-width: 500px; /* Tamaño máximo */
+        }
+        .grid-item {
+            aspect-ratio: 1; /* Mantiene los elementos cuadrados */
+            background-color: lightgray;
+            border: 1px solid #ddd;
+        }
+        .form-container {
+            text-align: center;
+            padding: 0 10px; /* Espaciado lateral en dispositivos pequeños */
+        }
+    </style>
+</head>
+<body>
+    <h1>Cuadrícula de Equipos</h1>
+    <div class="grid" id="grid"></div><br>
+    <div class="form-container">
+        <form id="teamForm">
+            <label>
+                Equipo Rojo: <input type="number" id="team1" min="0" max="25" value="7" required>
+            </label>
+            <br><br>
+            <label>
+                Equipo Azul: <input type="number" id="team2" min="0" max="25" value="8" required>
+            </label>
+            <br><br>
+            <button type="submit">Pintar Cuadrícula</button>
+        </form>
+    </div>
+    <script>
+        // Crear la cuadrícula de 5x5
+        const grid = document.getElementById("grid");
+        for (let i = 0; i < 25; i++) {
+            const div = document.createElement("div");
+            div.classList.add("grid-item");
+            grid.appendChild(div);
+        }
+
+        // Manejar el formulario
+        document.getElementById("teamForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const team1Count = parseInt(document.getElementById("team1").value);
+            const team2Count = parseInt(document.getElementById("team2").value);
+
+            if (team1Count + team2Count > 24) {
+                alert("La suma de los números no puede exceder 24.");
+                return;
+            }
+
+            // Limpiar la cuadrícula
+            document.querySelectorAll(".grid-item").forEach((item) => {
+                item.style.backgroundColor = "lightgray";
+            });
+
+            // Obtener casilleros aleatorios
+            const gridItems = Array.from(document.querySelectorAll(".grid-item"));
+            const randomIndices = [...Array(25).keys()].sort(() => Math.random() - 0.5);
+
+            // Pintar casilleros para el equipo 1
+            for (let i = 0; i < team1Count; i++) {
+                gridItems[randomIndices[i]].style.backgroundColor = "red";
+            }
+
+            // Pintar casilleros para el equipo 2
+            for (let i = team1Count; i < team1Count + team2Count; i++) {
+                gridItems[randomIndices[i]].style.backgroundColor = "blue";
+            }
+
+            // Pintar un casillero negro aleatoriamente
+            const blackIndex = randomIndices[team1Count + team2Count];
+            gridItems[blackIndex].style.backgroundColor = "black";
+        });
+    </script>
+</body>
+</html>
